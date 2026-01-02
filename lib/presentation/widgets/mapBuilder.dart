@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_drawing/path_drawing.dart';
@@ -7,8 +9,15 @@ import 'package:xml/xml.dart';
 // StreamBuilder o FutureBuilder
 class mapBuilder extends StatelessWidget {
   final String mapId;
+  final double mapWidth;
+  final double mapHeight;
 
-  const mapBuilder({super.key, required this.mapId});
+  const mapBuilder({
+    super.key,
+    required this.mapId,
+    required this.mapWidth,
+    required this.mapHeight,
+  });
 
   Future<Object> createMap(BuildContext context) async {
     List<SVGProvincia> provincias = [];
@@ -42,6 +51,25 @@ class mapBuilder extends StatelessWidget {
           Matrix4.translationValues(coords[0], coords[1], 0).storage,
         );
       }
+      if (transform.contains("rotate")) {
+        List<double> coords = cordsReg
+            .allMatches(transform)
+            .map((m) => double.parse(m.group(0)!))
+            .toList();
+
+        double radianes = coords[0] * (math.pi / 180);
+        final matrix = Matrix4.identity()
+          ..translate(
+            coords[1],
+            coords[2],
+          ) // 3. Lo devuelve a su posición original
+          ..rotateZ(radianes) // 2. Lo rota
+          ..translate(
+            -coords[1],
+            -coords[2],
+          ); // 1. Lo lleva al (0,0) respecto al punto de giro
+        flutterPath = flutterPath.transform(matrix.storage);
+      }
       provincias.add(
         SVGProvincia(label: label, path: flutterPath, estilo: style),
       );
@@ -68,7 +96,7 @@ class mapBuilder extends StatelessWidget {
         }
         if (data is List<SVGProvincia>) {
           return CustomPaint(
-            size: Size.infinite,
+            size: Size(mapWidth.toDouble(), mapHeight.toDouble()),
 
             painter: dibujarProvncias(data),
           );

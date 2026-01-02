@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:risk_proyect/presentation/widgets/mapBuilder.dart';
 
 class MapaInteractivo extends StatefulWidget {
-  final String mapId = "mapa_test";
+  final String mapId = "mapa_test2";
   @override
   _MapaInteractivoState createState() => _MapaInteractivoState();
 }
@@ -26,7 +26,11 @@ class _MapaInteractivoState extends State<MapaInteractivo> {
                     // Aquí lógica para detectar qué provincia tocaste
                     print("Tocaste en: ${details.localPosition}");
                   },
-                  child: mapBuilder(mapId: widget.mapId),
+                  child: mapBuilder(
+                    mapId: widget.mapId,
+                    mapWidth: screenSize.width * 0.9,
+                    mapHeight: screenSize.height * 0.7,
+                  ),
                   /*
                   * SvgImage(
                     assetPath: 'assets/data/mapa_test.svg',

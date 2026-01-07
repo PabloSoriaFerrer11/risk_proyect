@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:risk_proyect/presentation/widgets/mapBuilder.dart';
+import 'package:risk_proyect/provider/mouse_provider.dart';
 
-class MapaInteractivo extends StatefulWidget {
-  final String mapId = "mapa_test2";
-  @override
-  _MapaInteractivoState createState() => _MapaInteractivoState();
-}
+import 'mapBuilder.dart';
 
-class _MapaInteractivoState extends State<MapaInteractivo> {
+class MapaInteractivo extends ConsumerWidget {
+  final String mapId = "mapa_test";
+
   String provinciaSeleccionada = "Ninguna";
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final screenSize = MediaQuery.of(context).size;
+
     return Scaffold(
       body: Column(
         children: [
@@ -21,24 +21,22 @@ class _MapaInteractivoState extends State<MapaInteractivo> {
             child: Center(
               child: Container(
                 decoration: BoxDecoration(border: BoxBorder.all()),
-                child: GestureDetector(
-                  onTapUp: (details) {
-                    // Aquí lógica para detectar qué provincia tocaste
-                    print("Tocaste en: ${details.localPosition}");
+                child: MouseRegion(
+                  onHover: (event) {
+                    ref.read(mousePositionProvider.notifier).state =
+                        event.localPosition;
                   },
-                  child: mapBuilder(
-                    mapId: widget.mapId,
-                    mapWidth: screenSize.width * 0.9,
-                    mapHeight: screenSize.height * 0.7,
+                  onExit: (_) =>
+                      ref.read(mousePositionProvider.notifier).state = null,
+                  child: Column(
+                    children: [
+                      mapBuilder(
+                        mapId: mapId,
+                        mapWidth: screenSize.width * 0.9,
+                        mapHeight: screenSize.height * 0.7,
+                      ),
+                    ],
                   ),
-                  /*
-                  * SvgImage(
-                    assetPath: 'assets/data/mapa_test.svg',
-                    width: screenSize.width * 0.9,
-                    height: screenSize.height * 0.7,
-                    color: Colors.blue,
-                  )
-                  * */
                 ),
               ),
             ),

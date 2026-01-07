@@ -1,13 +1,11 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:path_drawing/path_drawing.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:risk_proyect/data/models/SVGProvincia.dart';
-import 'package:xml/xml.dart';
+import 'package:risk_proyect/provider/loadmap_provider.dart';
+import 'package:risk_proyect/provider/mouse_provider.dart';
 
 // StreamBuilder o FutureBuilder
-class mapBuilder extends StatelessWidget {
+class mapBuilder extends ConsumerWidget {
   final String mapId;
   final double mapWidth;
   final double mapHeight;
@@ -19,98 +17,54 @@ class mapBuilder extends StatelessWidget {
     required this.mapHeight,
   });
 
-  Future<Object> createMap(BuildContext context) async {
-    List<SVGProvincia> provincias = [];
-    String svgString;
-    final cordsReg = RegExp(r"[-+]?\d*\.?\d+");
-
-    try {
-      svgString = await rootBundle.loadString('assets/data/$mapId.svg');
-    } catch (e) {
-      svgString = "";
-      return "Error al intentar obtener el mapa";
-    }
-    final document = XmlDocument.parse(svgString);
-
-    final paths = document.findAllElements('path');
-
-    for (var element in paths) {
-      String label = element.getAttribute('label') ?? 'Sin nombre';
-      String data = element.getAttribute('d') ?? '';
-      String style = element.getAttribute('style') ?? '';
-      String transform = element.getAttribute('transform') ?? '';
-
-      Path flutterPath = parseSvgPathData(data);
-      if (transform.contains("translate")) {
-        List<double> coords = cordsReg
-            .allMatches(transform)
-            .map((m) => double.parse(m.group(0)!))
-            .toList();
-
-        flutterPath = flutterPath.transform(
-          Matrix4.translationValues(coords[0], coords[1], 0).storage,
-        );
-      }
-      if (transform.contains("rotate")) {
-        List<double> coords = cordsReg
-            .allMatches(transform)
-            .map((m) => double.parse(m.group(0)!))
-            .toList();
-
-        double radianes = coords[0] * (math.pi / 180);
-        final matrix = Matrix4.identity()
-          ..translate(
-            coords[1],
-            coords[2],
-          ) // 3. Lo devuelve a su posición original
-          ..rotateZ(radianes) // 2. Lo rota
-          ..translate(
-            -coords[1],
-            -coords[2],
-          ); // 1. Lo lleva al (0,0) respecto al punto de giro
-        flutterPath = flutterPath.transform(matrix.storage);
-      }
-      provincias.add(
-        SVGProvincia(label: label, path: flutterPath, estilo: style),
-      );
-    }
-
-    return provincias;
-  }
-
   @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: createMap(context),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else if (!snapshot.hasData) {
-          return const Text('No data');
-        }
-        var data = snapshot.data;
-        if (data is String) {
-          return Text(data);
-        }
-        if (data is List<SVGProvincia>) {
-          return CustomPaint(
-            size: Size(mapWidth.toDouble(), mapHeight.toDouble()),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final mousePos = ref.watch(mousePositionProvider);
 
-            painter: dibujarProvncias(data),
-          );
-        }
-        return Text("");
+    final loadMap = ref.watch(mapaDataProvider(mapId));
+
+    return loadMap.when(
+      data: (data) {
+        return GestureDetector(
+          onTapDown: (details) {
+            final tapPos = details.localPosition;
+            double svgWidth = 300;
+            double scaleX = mapWidth / svgWidth;
+            double scaleY = mapHeight / svgWidth;
+            double scale = scaleX < scaleY ? scaleX : scaleY;
+
+            final adjustedTapPos = Offset(tapPos.dx / scale, tapPos.dy / scale);
+
+            try {
+              final provinciaClicada = data.firstWhere(
+                (provincia) => provincia.path.contains(adjustedTapPos),
+              );
+
+              print("Has clicado en: ${provinciaClicada.label}");
+              // Aquí puedes llamar a un notifier para abrir un diálogo,
+              // cambiar de pantalla o actualizar un estado de "provincia seleccionada"
+              // ref.read(selectedProvinciaProvider.notifier).state = provinciaClicada;
+            } catch (e) {
+              print("Clic fuera de una provincia");
+            }
+          },
+          child: CustomPaint(
+            painter: dibujarProvncias(data, mousePos),
+            size: Size(mapWidth.toDouble(), mapHeight.toDouble()),
+          ),
+        );
       },
+      loading: () => const CircularProgressIndicator(),
+
+      error: (err, stack) => Text('Error: $err'),
     );
   }
 }
 
 class dibujarProvncias extends CustomPainter {
   final List<SVGProvincia> layers;
-
-  dibujarProvncias(this.layers);
+  final Offset? mousePosition;
+  dibujarProvncias(this.layers, this.mousePosition);
 
   Color convertirAColor(String hexColor) {
     // 1. Limpiamos el string por si trae el '#'
@@ -128,6 +82,8 @@ class dibujarProvncias extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    print("Posición del Ratón: $mousePosition");
+
     double svgWidth = 300;
     double svgHeight = 300;
 
@@ -152,7 +108,7 @@ class dibujarProvncias extends CustomPainter {
         }
       }
 
-      final pincelRelleno = Paint()
+      var pincelRelleno = Paint()
         ..color = convertirAColor(fill)
         ..style = PaintingStyle.fill;
 
@@ -161,6 +117,17 @@ class dibujarProvncias extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1;
 
+      if (mousePosition != null) {
+        final adjustedMousePos = Offset(
+          mousePosition!.dx / scale,
+          mousePosition!.dy / scale,
+        );
+
+        if (layer.path.contains(adjustedMousePos)) {
+          pincelRelleno.color = Colors.yellowAccent;
+        }
+      }
+
       canvas.drawPath(layer.path, pincelBorde);
 
       canvas.drawPath(layer.path, pincelRelleno);
@@ -168,5 +135,8 @@ class dibujarProvncias extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+  bool shouldRepaint(covariant dibujarProvncias oldDelegate) {
+    return oldDelegate.mousePosition != mousePosition ||
+        oldDelegate.layers != layers;
+  }
 }

@@ -18,6 +18,7 @@ final mapaDataProvider = FutureProvider.family<List<SVGProvincia>, String>((
   try {
     svgString = await rootBundle.loadString('assets/data/$mapId.svg');
   } catch (e) {
+    print("Error al cargar el SVG: $e");
     svgString = "";
     return [];
   }

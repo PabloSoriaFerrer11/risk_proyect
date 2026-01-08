@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:risk_proyect/data/models/SVGProvincia.dart';
 import 'package:risk_proyect/provider/loadmap_provider.dart';
-import 'package:risk_proyect/provider/mouse_provider.dart';
+import 'package:risk_proyect/provider/ui_provider.dart';
 
 // StreamBuilder o FutureBuilder
 class mapBuilder extends ConsumerWidget {
@@ -40,10 +40,10 @@ class mapBuilder extends ConsumerWidget {
                 (provincia) => provincia.path.contains(adjustedTapPos),
               );
 
-              print("Has clicado en: ${provinciaClicada.label}");
               // Aquí puedes llamar a un notifier para abrir un diálogo,
               // cambiar de pantalla o actualizar un estado de "provincia seleccionada"
-              // ref.read(selectedProvinciaProvider.notifier).state = provinciaClicada;
+              ref.read(selectedProvinciaProvider.notifier).state =
+                  provinciaClicada;
             } catch (e) {
               print("Clic fuera de una provincia");
             }
@@ -66,14 +66,16 @@ class dibujarProvncias extends CustomPainter {
   final Offset? mousePosition;
   dibujarProvncias(this.layers, this.mousePosition);
 
-  Color convertirAColor(String hexColor) {
-    // 1. Limpiamos el string por si trae el '#'
+  Color convertirAColor(String hexColor, {bool opacity = false}) {
     hexColor = hexColor.replaceAll("#", "");
 
-    // 2. Si el string tiene 6 caracteres (RRGGBB),
     // le agregamos el 'FF' al principio para la opacidad
     if (hexColor.length == 6) {
-      hexColor = "FF$hexColor";
+      if (opacity) {
+        hexColor = "CC$hexColor";
+      } else {
+        hexColor = "FF$hexColor";
+      }
     }
 
     // 3. Parseamos el string como hexadecimal (base 16)
@@ -124,7 +126,7 @@ class dibujarProvncias extends CustomPainter {
         );
 
         if (layer.path.contains(adjustedMousePos)) {
-          pincelRelleno.color = Colors.yellowAccent;
+          pincelRelleno.color = convertirAColor(fill, opacity: true);
         }
       }
 

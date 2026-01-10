@@ -1,18 +1,19 @@
-# risk_proyect
+# risk_project
 
-Proyecto para simulación de Risk. Si, esta mal escrito :)
-Es una simplea idea sacado de una partidas que jugue hace tiempo en un discord. 
+Proyecto para simulación de partidas tipo Risk.
+Es una simple idea sacado de una partidas que jugue hace tiempo en un discord. 
 
 ## Idea
 
-La idea es crear una aplicación WEB o para Andriod para poder gestionar partidas de tipo Risk en las que las batllas se juegan en otro lado.
-Serán partidas por turnos, en la que los equipos tendrán que enviar sus turnos a la vez.
+La idea es crear una aplicación WEB y/o Andriod para poder gestionar partidas de tipo Risk en las que las batllas se juegan de la forma que se especifique la partida.
+
+Serán partidas por turnos, en la que los equipos tendrán que enviar sus turnos a la vez poniendose de acuerdo como facción.
 
 ## Ejemplo de Partida
 
 - Un administrador creará una partida seleccionando el mapa en el que se vaya a jugdar la partida. Este administrador tambien pondrá una fecha máxima para unirse jugadores y empezar la primera fase de la partda (Aparción).
 - A este administrador se le proporcionará un código (Id) y una contraseña e invitará a otros jugadores pasandole el inidentficador y contraseña. Solo una cantidad de jugadores se podrán unir. Un jugador, con solo * el código * podrá consultar la partida sin necesidad de inicar sesión.
-- Los jugadores en conjunto, como un clan, deberán ponerse de acuerdo para decidir la acción que realizará su facción dependiendo de la fase en la que se encuentre la partida.
+- Los jugadores en conjunto, como un clan, deberán ponerse de acuerdo para decidir la acción que realizará su facción dependiendo de la [fase](### Fases) en la que se encuentre la partida.
 - 
 
 ### Fases

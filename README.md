@@ -18,8 +18,8 @@ La aplicación esta desarrollada completamente con el lenguaje DART y el frameWo
 ## Ejemplo de Partida
 
 - Un administrador creará una partida seleccionando el mapa en el que se vaya a jugdar la partida. Este administrador tambien pondrá una fecha máxima para unirse jugadores y empezar la primera fase de la partda (Aparción).
-- A este administrador se le proporcionará un código (Id) y una contraseña e invitará a otros jugadores pasandole el inidentficador y contraseña. Solo una cantidad de jugadores se podrán unir. Un jugador, con solo * el código * podrá consultar la partida sin necesidad de inicar sesión.
-- Los jugadores en conjunto, como un clan, deberán ponerse de acuerdo para decidir la acción que realizará su facción dependiendo de la fase en la que se encuentre la partida.
+- A este administrador se le proporcionará un código (Id) y una contraseña e invitará a otros jugadores pasandole el inidentficador y contraseña. Solo una cantidad de jugadores se podrán unir. Un jugador, con solo *el código* podrá consultar la partida sin necesidad de inicar sesión.
+- Los jugadores en conjunto, como un clan, deberán ponerse de acuerdo para decidir la acción que realizará su facción dependiendo de la fase [fases](#fases) en la que se encuentre la partida.
   
 ### Fases
   1. Aparición: Solo se juega el primer turno de la partida. La facción decide donde aparecer en el mapa como conjunto.

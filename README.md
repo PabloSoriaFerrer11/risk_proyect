@@ -13,7 +13,7 @@ Serán partidas por turnos, en la que los equipos tendrán que enviar sus turnos
 
 - Un administrador creará una partida seleccionando el mapa en el que se vaya a jugdar la partida. Este administrador tambien pondrá una fecha máxima para unirse jugadores y empezar la primera fase de la partda (Aparción).
 - A este administrador se le proporcionará un código (Id) y una contraseña e invitará a otros jugadores pasandole el inidentficador y contraseña. Solo una cantidad de jugadores se podrán unir. Un jugador, con solo * el código * podrá consultar la partida sin necesidad de inicar sesión.
-- Los jugadores en conjunto, como un clan, deberán ponerse de acuerdo para decidir la acción que realizará su facción dependiendo de la [fase](### Fases) en la que se encuentre la partida.
+- Los jugadores en conjunto, como un clan, deberán ponerse de acuerdo para decidir la acción que realizará su facción dependiendo de la fase en la que se encuentre la partida.
 - 
 
 ### Fases
@@ -22,8 +22,12 @@ Serán partidas por turnos, en la que los equipos tendrán que enviar sus turnos
   3. Batalla
   4. Refuerzos
 
-***Experiencia Propia***
-Las partidas que yo jugue fueron asi:
-  - **Contexto** El mapa en el que jugamos fue un mapa de TWWH2. Todos los jugadores estabamos en un discord separados por equipos
-  - Cada equipo te
+## Experiencia Propia
+
+La partida que yo jugué fueron asi:
+  - **Contexto** El mapa en el que jugamos fue un mapa de TWWH2. Todos los jugadores estabamos en un discord separados por equipos donde habían seleccionado la facción principal de una raza.
+
+```js
+console.log("Hola mundo");
+
 

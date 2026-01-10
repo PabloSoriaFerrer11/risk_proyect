@@ -35,4 +35,12 @@ La partida que yo jugué fueron asi:
 
 
 
+*(puedes poner `js`, `html`, `css`, `python`, etc.)*
+
+---
+
+## 📦 Citas
+```md
+> Esto es una cita
+
 

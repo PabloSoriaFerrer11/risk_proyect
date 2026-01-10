@@ -15,6 +15,9 @@ Más abajo se explica el funcionamiento de una partida.
 
 La aplicación esta desarrollada completamente con el lenguaje DART y el frameWork de Flutter.
 
+```md
+> Flutter es un framework open-source desarrollado por Google para la creación de aplicaciones multiplataforma a partir de una única base de código.
+
 ## Ejemplo de Partida
 
 - Un administrador creará una partida seleccionando el mapa en el que se vaya a jugdar la partida. Este administrador tambien pondrá una fecha máxima para unirse jugadores y empezar la primera fase de la partda (Aparción).
@@ -35,12 +38,6 @@ La partida que yo jugué fueron asi:
 
 
 
-*(puedes poner `js`, `html`, `css`, `python`, etc.)*
 
----
-
-## 📦 Citas
-```md
-> Esto es una cita
 
 
